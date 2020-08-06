@@ -1,0 +1,179 @@
+﻿@model IEnumerable<Dahab.Models.Code>
+@{
+    ViewBag.Title = "اكواد الخصم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<style>
+    .input-group > .input-group-append > .btn {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .input-group > .input-group-append > .btn {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    .wall {
+        top: 50px;
+        background: #fff;
+        padding: 20px 0;
+    }
+</style>
+
+<div class="main-panel">
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-plain">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title mt-0">
+                                اكواد الخصم
+                            </h4>
+
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row wall">
+
+                                <div class="col-md-4 col-form-label">
+                                    <h4> توليد الكود </h4>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group mb-3">
+                                        <input type="text" id="Discount" class="form-control" placeholder="الخصم %" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button onclick="Generate();" class="btn btn-outline-primary" type="button"> توليد </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <label id="Code" class="form-control"></label>
+                                        <button class="btn btn-default" onclick="copyToClipboard('#Code');">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="table-responsive">
+                                <table id="example23" class="display nowrap table table-hover">
+                                    <thead>
+                                    <th>
+                                        الكود
+                                    </th>
+                                    <th>
+                                        قيمة الخصم 
+                                    </th>
+                                    <td>
+                                        <i class="fas fa-cogs"></i>
+                                    </td>
+
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr id="@item.ID">
+                                                <td>
+                                                    <button onclick="ShowCode('Lab-@(item.ID)');" onblur="HideCode('Lab-@(item.ID)');" class="btn btn-outline">
+                                                        <i class="fas fa-eye"></i>
+                                                        <label style="display:none" id="Lab-@item.ID">
+                                                            @item.Code1
+                                                        </label>
+                                                    </button>     
+                                                                                                
+                                                   
+                                                </td>
+                                                <td>
+                                                    @item.Discount %
+                                                </td>
+                                                <td>
+                                                    <button type="button" onclick="Delete(@(item.ID));" class="btn btn-danger">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@*Delete Script*@
+
+<script>
+    function Delete(i) {
+
+        var Confirmed = confirm('هل تريد مسح هذا الكود بالفعل ؟؟');
+
+        if (Confirmed == true) {
+            $.post("@Url.Action("Delete", "Codes")", {
+
+                id: i
+
+            },
+        function (data) {
+            $("#example23 tr#" + data + "").remove();
+        }
+
+          )
+        }
+    }
+
+
+</script>
+
+
+@*Generate Script*@
+
+<script>
+    function Generate() {
+
+
+        $.post("@Url.Action("GenerateCode", "Codes")", {
+            discount: $("#Discount").val()
+            },
+        function (data) {
+            $("#Code").html(data);
+        }
+
+          )
+        }
+
+
+</script>
+
+<script>
+    function copyToClipboard(element) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(element).text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+</script>
+<script>
+    function ShowCode(i) {
+        document.getElementById(i).style.display = "block";
+    }
+    function HideCode(i) {
+        document.getElementById(i).style.display = "none";
+    }
+</script>
+
+

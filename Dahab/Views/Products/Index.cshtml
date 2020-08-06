@@ -1,0 +1,402 @@
+﻿@model IEnumerable<Dahab.Models.Product>
+@using Dahab.Models;
+@{
+    ViewBag.Title = "المنتجات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-panel">
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-plain">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title mt-0">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                                    <i class="fa fa-plus-circle"></i>
+                                </button>
+                            </h4>
+                        </div>
+                        @if (TempData["error"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>@TempData["error"]</strong>
+                            </div>
+                        }
+                        @if (TempData["Done"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>@TempData["Done"]</strong>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example23" class="display nowrap table table-hover">
+                                    <thead>
+                                    <th>
+                                        الاسم
+                                    </th>
+                                    <th>
+                                        السعر
+                                    </th>
+                                    <th>
+                                        السعر النهائي
+                                    </th>
+                                    <th>
+                                        <i class="fa fa-cogs"></i>
+                                    </th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr id="@(item.ID)">
+                                                <td>
+                                                    @item.Name
+                                                </td>
+                                                <td>
+                                                    @item.Price
+                                                </td>
+                                                <td>
+                                                    @item.TotalPrice
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-info" onclick="Details(@(item.ID));" data-toggle="modal" data-target="#myModal2"> <i class="fa fa-info-circle"></i></button>
+                                                    <button class="btn btn-primary" onclick="Edit(@(item.ID));" data-toggle="modal" data-target="#myModal1"> <i class="fa fa-cog"></i></button>
+                                                    <button class="btn btn-danger" onclick="Delete(@(item.ID));"> <i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">اضافة منتج </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form action="~/Products/Create" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fa fa-user-circle"></i> الاسم : </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Name" required class="form-control" id="staticEmail" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fa fa-user-circle"></i> الاسم EN  : </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Name_EN" required class="form-control" id="staticEmail" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fas fa-list-ol"></i>  الموديل :</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Model" required class="form-control" id="staticEmail" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fas fa-audio-description"></i>  تفاصيل :</label>
+                                <div class="col-sm-8">
+                                    <textarea type="text" name="Description" required class="form-control" id="staticEmail" value=""></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fas fa-audio-description"></i>  تفاصيل EN :</label>
+                                <div class="col-sm-8">
+                                    <textarea type="text" name="Description_EN" required class="form-control" id="staticEmail" value=""></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fas fa-percentage"></i> قيمة الخصم :</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Discount" class="form-control" id="staticEmail" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fas fa-money-bill-alt"></i>  السعر :</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="Price" required class="form-control" id="staticEmail" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="option" class="col-sm-4 col-form-label"><i class="fas fa-layer-group"></i>  النوع : </label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Cat_ID",new SelectList(new DB().Categories,"ID","Name"),"-قم باختيار النوع -",new {@id= "exampleFormControlSelect1", @class= "form-control",@required= "required" })
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 text-right" style="line-height: 2.5em;"> صور </label>
+                                <div class="col-xs-12 col-md-4 ">
+                                    <!-- image-preview-filename input [CUT FROM HERE]-->
+                                    <div class="input-group image-preview">
+
+                                        <span class="input-group-btn">
+
+                                            <!-- image-preview-input -->
+                                            <div class="btn btn-outline-dark image-preview-input">
+                                                <input type="file" accept="" name="Photo" required />
+                                                <i class="fa fa-folder-open"></i>
+                                                اختر صورة
+
+                                            </div>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> اضافة </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Edit Modal -->
+        <div id="myModal1" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">تعديل منتج </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form action="~/Products/Edit" method="post" enctype="multipart/form-data">
+                            <div id="FormEdit">
+                               
+                            </div>
+                            <div class="form-group row">
+                                <label for="option" class="col-sm-4 col-form-label"><i class="fas fa-layer-group"></i>  النوع : </label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Cat_ID", new SelectList(new DB().Categories, "ID", "Name"), "-قم باختيار النوع -", new { @id = "exampleFormControlSelect2", @class = "form-control", @required = "required" })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 text-right" style="line-height: 2.5em;"> صور </label>
+                                <div class="col-xs-12 col-md-4 ">
+                                    <!-- image-preview-filename input [CUT FROM HERE]-->
+                                    <div class="input-group image-preview">
+
+                                        <span class="input-group-btn">
+
+                                            <!-- image-preview-input -->
+                                            <div class="btn btn-outline-dark image-preview-input">
+                                                <input type="file" accept="" name="Photo" />
+                                                <i class="fa fa-folder-open"></i>
+                                                اختر صورة
+
+                                            </div>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> حفظ </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Info Modal -->
+        <div id="myModal2" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"> معلومات المنتج </h4>
+                    </div>
+                    <div class="modal-body" id="DetailsForm">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Delete Script*@
+
+<script>
+    function Delete(i) {
+
+        var Confirmed = confirm('هل تريد مسح هذا المنتج بالفعل ؟؟ .. سيتم مسح الطلبات الخاصة بهذا المنتج !!');
+
+        if (Confirmed == true) {
+            $.post("@Url.Action("Delete", "Products")", {
+
+                id: i
+
+            },
+        function (data) {
+            $("#example23 tr#" + data + "").remove();
+        }
+
+          )
+        }
+    }
+
+
+</script>
+
+@*Edit Script*@
+
+<script>
+    function Edit(i) {
+        $("#FormEdit").html('<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>');
+            $.post("@Url.Action("Product", "Products")", {
+
+            id: i
+
+        },
+        function (data) {
+            $("#FormEdit").html("");
+            $("#FormEdit").append('<input id="ID" name="ID" value='+data.ID+' type="hidden" /><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fa fa-user-circle"></i> الاسم : </label>\
+                                <div class="col-sm-8"><input type="text" name="Name" required class="form-control" value="' + data.Name + '">\
+                                </div> </div><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fa fa-user-circle"></i> الاسم EN  : </label>\
+                                <div class="col-sm-8"><input type="text" name="Name_EN" required class="form-control" value="' + data.Name_EN + '">\
+                                </div></div><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fas fa-list-ol"></i>  الموديل :</label>\
+                                <div class="col-sm-8"><input type="text" name="Model" required class="form-control" id="staticEmail" value="' + data.Model + '">\
+                                </div></div><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fas fa-audio-description"></i>  تفاصيل :</label>\
+                                <div class="col-sm-8"> <textarea type="text" name="Description" required class="form-control" id="staticEmail" >' + data.Description + '</textarea>\
+                                </div></div><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fas fa-audio-description"></i>  تفاصيل EN :</label>\
+                                <div class="col-sm-8"><textarea type="text" name="Description_EN" required class="form-control" id="staticEmail">' + data.Description_EN + '</textarea>\
+                                </div></div><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fas fa-percentage"></i> قيمة الخصم :</label>\
+                                <div class="col-sm-8"><input type="text" name="Discount" class="form-control" id="staticEmail" value="' + data.Discount + '">\
+                                </div></div><div class="form-group row"><label for="name" class="col-sm-4 col-form-label"><i class="fas fa-money-bill-alt"></i>  السعر :</label>\
+                                <div class="col-sm-8"><input type="text" name="Price" required class="form-control" id="staticEmail" value="' + data.Price + '">\
+                                </div></div>');
+            document.getElementById("exampleFormControlSelect2").value = data.Cat_ID;
+        }
+
+      )
+        }
+</script>
+
+@*Details Script*@
+
+<script>
+    function Details(i) {
+        $("#DetailsForm").html('<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>');
+            $.post("@Url.Action("Product", "Products")", {
+
+            id: i
+
+        },
+        function (data) {
+            $("#DetailsForm").html("");
+            $("#DetailsForm").append('<div class="content">\
+                            <div class="container-fluid">\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-user-circle"></i> الاسم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> '+data.Name+' </p>\
+                                        </div>\
+                                    </div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-user-circle"></i> الاسم EN</div><div class="card-body"><p class="card-text"> ' + data.Name_EN + ' </p></div></div></div>\
+                           <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-list-ol"></i> الموديل</div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.Model + ' </p></div></div> </div>\
+                                     <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-audio-description"></i> التفاصيل</div>\
+                                        <div class="card-body">\
+                                            <p class="card-text">' + data.Description + '</p></div></div> </div><div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-audio-description"></i> التفاصيل EN\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text">' + data.Description_EN + '</p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-percentage"></i> قيمة الخصم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.Discount + ' % </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                              عدد الطلبات\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.OrdersCount + ' </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                             عدد المفضلات\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.FavoritesCount + '  </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-money-bill-alt"></i> السعر\
+                                        </div><div class="card-body"><p class="card-text"> ' + data.Price + ' </p>\
+                                        </div></div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center"><div class="card-header card-header-info"> <i class="fas fa-money-bill-alt"></i> السعر النهائي\
+                                        </div><div class="card-body"><p class="card-text"> ' + data.TotalPrice + ' </p></div>\
+                                    </div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center"><div class="card-header card-header-info"> <i class="fas fa-layer-group"></i> النوع\
+                                        </div><div class="card-body"><p class="card-text"> ' + data.CatName + ' </p></div>\
+                                    </div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center"><div class="card-header card-header-info"><i class="fas fa-image"></i> الصورة\
+                                        </div><div class="card-body"><p class="card-img-bottom"> <img src="../../Uploads/Products/'+data.ID+'.jpg" width="40%" />\
+                                            </p></div></div></div></div> </div>');
+
+        }
+
+          )
+        }
+</script>

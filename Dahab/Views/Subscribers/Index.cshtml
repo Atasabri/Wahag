@@ -1,0 +1,164 @@
+﻿@model IEnumerable<Dahab.Models.Subscriber>
+
+@{
+    ViewBag.Title = "المشتركين";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-panel">
+
+    <div class="content">
+        <div class="container-fluid">
+            <form action="~/Subscribers/SendMail" enctype="multipart/form-data" method="post">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-plain">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title mt-0">
+                                    المشتركين
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example23" class="display nowrap table table-hover">
+                                        <thead>
+                                        <th>
+                                            البريد الالكتروني
+                                        </th>
+                                        <th>
+                                            <i class="fa fa-cogs"></i>
+                                        </th>
+                                        <th>
+                                            <input type="checkbox" id="select_all" /> 
+                                        </th>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr id="@(item.ID)">
+                                                    <td>
+                                                        @item.Email
+                                                    </td>
+                                                    <td>
+                                                        <button onclick="Delete(@(item.ID));" class="btn btn-danger"> <i class="fa fa-trash"></i></button>
+                                                    </td>
+                                                    <td>
+                                                        <input class="checkbox" value="@item.Email" type="checkbox" name="check">
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row wall">
+                    <div class="container">
+                        <div class="col-md-3 col-form-label">
+                            <h4>ارسال رسالة بريد الكتروني   </h4>
+                        </div>
+                        <div class="col-md-5">
+
+                            <div class="input-group mb-3">
+
+
+                                <input type="text" class="form-control" placeholder="العنوان" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="form-group row">
+                                    <label class="col-md-3 text-right" style="line-height: 2.5em;">  </label>
+                                    <div class="col-xs-12 col-md-4 ">
+                                        <!-- image-preview-filename input [CUT FROM HERE]-->
+                                        <div class="input-group image-preview">
+
+                                            <span class="input-group-btn">
+
+                                                <!-- image-preview-input -->
+                                                <div class="btn btn-outline-dark image-preview-input">
+                                                    <input type="file" accept="" name="File" required />
+                                                    <i class="fa fa-folder-open"></i>
+                                                    اختر ملف الرسالة
+
+                                                </div>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary" type="submit"> ارسال  </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <style>
+                            .input-group > .input-group-append > .btn {
+                                border-top-right-radius: 0;
+                                border-bottom-right-radius: 0;
+                            }
+
+                            .input-group > .input-group-append > .btn {
+                                border-top-left-radius: 5px;
+                                border-bottom-left-radius: 5px;
+                            }
+
+                            .wall {
+                                background: #fff;
+                            }
+                        </style>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <script>
+                    var select_all = document.getElementById("select_all"); //select all checkbox
+                    var checkboxes = document.getElementsByClassName("checkbox"); //checkbox items
+
+                    //select all checkboxes
+                    select_all.addEventListener("change", function (e) {
+                        for (i = 0; i < checkboxes.length; i++) {
+                            checkboxes[i].checked = select_all.checked;
+                        }
+                    });
+
+
+                    for (var i = 0; i < checkboxes.length; i++) {
+                        checkboxes[i].addEventListener('change', function (e) {
+                            if (this.checked == false) {
+                                select_all.checked = false;
+                            }
+
+                            if (document.querySelectorAll('.checkbox:checked').length == checkboxes.length) {
+                                select_all.checked = true;
+                            }
+                        });
+                    }
+        </script>
+
+    </div>
+</div>
+
+@*Delete Script*@
+
+<script>
+    function Delete(i) {
+
+        var Confirmed = confirm('هل تريد مسح هذا البريد الالكتروني بالفعل ؟؟');
+
+        if (Confirmed == true) {
+            $.post("@Url.Action("Delete", "Subscribers")", {
+
+                id: i
+
+            },
+        function (data) {
+            $("#example23 tr#" + data + "").remove();
+        }
+
+          )
+        }
+    }
+
+
+</script>

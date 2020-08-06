@@ -1,0 +1,100 @@
+﻿@model Dahab.Models.User
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title"> تفاصيل الحساب </h4>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h3> الاسم </h3>
+                                    <p> @Model.Name </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h3> الاسم الاول </h3>
+                                    <p> @Model.FirstName </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h3> اسم العائلة  </h3>
+                                    <p> @Model.LastName </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h3> رقم الهاتف </h3>
+                                    <p> @Model.Phone </p>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h3> البريد </h3>
+                                    <p> @Model.Email </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h3> العنوان </h3>
+                                    <p>@Model.Address </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h3> عنوان الدفع </h3>
+                                    <p>  @Model.BillAddress  </p>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-plain">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title mt-0">
+                                المفضلة
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example23" class="display nowrap table table-hover">
+                                    <thead>           
+                                    <th>
+                                        اسم المنتج
+                                    </th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Favorites)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.Product.Name
+                                                </td>
+                                            </tr>
+
+                                        }
+          
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+

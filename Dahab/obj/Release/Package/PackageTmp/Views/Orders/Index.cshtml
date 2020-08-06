@@ -1,0 +1,512 @@
+﻿@model IEnumerable<Dahab.Models.Order>
+
+@{
+    ViewBag.Title = "الطلبات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #map {
+        height: 300px;
+        width: 100%;
+    }
+</style>
+
+<div class="main-panel">
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-plain">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title mt-0"> الطلبات </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example23" class="display nowrap table table-hover">
+                                    <thead>
+                                    <th>
+                                        المستخدم
+                                    </th>
+                                    <th>
+                                        التاريخ
+                                    </th>
+                                    <th>
+                                        الحالة
+                                    </th>
+
+                                    <th>
+                                        <i class="fa fa-cogs"></i>
+                                    </th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.OrderByDescending(x=>x.ID))
+                                        {
+                                            <tr id="@(item.ID)">
+                                                <td>
+                                                    <a href="~/Users/Details/@(item.User_ID)" style="font-size:18px"> @item.User.Name </a>
+                                                </td>
+                                                <td>
+                                                    @item.Date
+                                                </td>
+                                                @if (item.IsArriveToUser)
+                                                {
+                                                    <td>
+                                                        <i class="fas fa-check"></i>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td id="@(item.ID)">
+                                                        <button onclick="Arrive(@(item.ID));" class="btn btn-success" type="button"> <i class="fa fa-check" style="color:#fff"></i></button>
+                                                    </td>
+                                                }                                              
+                                                <td>
+                                                    <button onclick="Details(@(item.ID));" class="btn btn-info" data-toggle="modal" data-target="#myModal2"> <i class="fa fa-info-circle"></i></button>
+                                                    <button onclick="Delete(@(item.ID));" class="btn btn-danger"> <i class="fa fa-trash"></i></button>
+                                                 </td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Modal -->
+        <div id="myModal2" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"> معلومات الطلب </h4>
+                    </div>
+                    <div id="DetailsForm" class="modal-body">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Modal -->
+        <div id="myModal3" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"> معلومات المنتج </h4>
+                    </div>
+                    <div class="modal-body" id="DetailsFormProduct">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Delete Script*@
+
+<script>
+    function Delete(i) {
+
+        var Confirmed = confirm('هل تريد مسح الطلب  بالفعل ؟؟');
+
+
+        if (Confirmed == true) {
+            $.post("@Url.Action("Delete", "Orders")", {
+
+                id: i
+
+            },
+        function (data) {
+            $("#example23 tr#" + data + "").remove();
+        }
+
+          )
+        }
+    }
+
+
+</script>
+
+@*Arrive Script*@
+
+<script>
+    function Arrive(i) {
+
+        var Confirmed = confirm('هل تم توصيل الطلب  بالفعل ؟؟');
+
+        if (Confirmed == true) {
+            $.post("@Url.Action("Arrive", "Orders")", {
+
+                id: i
+
+            },
+        function (data) {
+            $("#example23 td#" + data + "").html('<i class="fas fa-check"></i>');
+        }
+
+          )
+        }
+    }
+
+
+</script>
+
+@*Details Script*@
+
+<script>
+    function Details(i) {
+        $("#DetailsForm").html('<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>');
+            $.post("@Url.Action("Order", "Orders")", {
+
+            id: i
+
+        },
+        function (data) {
+            $("#DetailsForm").html("");
+            $("#DetailsForm").append('<div class="content">\
+                            <div class="container-fluid">\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            التاريخ\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text">'+data.Date+' </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            اسم المستخدم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"><a target="_blank" href="/Users/Details/' + data.User_ID + '"> ' + data.UserName + '</a>  </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            رقم الهاتف\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                 ' + data.Phone + ' \
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            المدينه\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                ' + data.City + '\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            المنطقة\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                 ' + data.Place + '\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+
+            if (data.Lat != null&&data.Log!=null)
+            {
+                $("#DetailsForm").append('<div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                             الخريطة\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                 <div id="map"></div>\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+                var myLatLng = { lat: data.Lat, lng: data.Log };
+
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: myLatLng
+                });
+
+                var marker = new google.maps.Marker({
+                    position: myLatLng,
+                    map: map,
+                    title: 'Hello World!'
+                });
+
+            }
+       
+            if (data.UseVisa)
+            {
+                $("#DetailsForm").append('<div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            استخدام بطاقة الاتمان\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                  تم استخدام الدفع الالكتروني\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            } else {
+                $("#DetailsForm").append('<div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            استخدام بطاقة الاتمان\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                لم يتم استخدام الدفع الالكتروني \
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            }
+            
+            $("#DetailsForm").append('<div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            السعر الاساسي\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                ' + data.TotalPrice + '\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            if (data.Discount != null)
+            {
+                $("#DetailsForm").append(' <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            الخصم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                ' + data.Discount + ' %\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            نوع الخصم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                ' + data.DiscountType + ' \
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            }
+           
+            $("#DetailsForm").append('<div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            السعر بعد الخصم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                ' + data.FinalPrice + ' \
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            if (data.IsArriveToUser)
+            {
+                $("#DetailsForm").append(' <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            حالة الطلب\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                                تم توصيل هذا الطلب \
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            } else {
+                $("#DetailsForm").append(' <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            حالة الطلب\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-img-bottom">\
+                                               لم يتم توصيل هذا الطلب \
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+            }
+          
+
+            $("#DetailsForm").append('<div class="col-md-12">\
+                                    <div class="card card-plain">\
+                                        <div class="card-header card-header-primary">\
+                                            <h4 class="card-title mt-0"> تفاصيل الطلبات </h4>\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <div class="table-responsive">\
+                                                <table id="example" class="display nowrap table table-hover">\
+                                                    <thead>\
+                                                     <th>\
+                                                            المنتج\
+                                                    </th>\
+                                                    <th>\
+                                                        العدد\
+                                                    </th> <th>\
+                                                        السعر</th><th>\
+                                                        الرسالة\
+                                                    </th></thead>\
+                                                    <tbody id="data">\
+                                                    </tbody>\
+                                                </table>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>\
+');
+            var array = data.Details;
+            for (var i = 0; i < array.length; i++) {
+                $("#example #data").append('<tr><td style="color:blue;cursor:pointer" onclick="Product(' + array[i].Product_ID + ');"  data-toggle="modal" data-target="#myModal3">' + array[i].Name + '</td><td>' + array[i].Count + '</td><td>' + array[i].Price + ' </td><td>' + array[i].Message + '</td></tr>');
+            }            
+        }
+
+          )
+        }
+</script>
+
+@*Product Script*@
+
+<script>
+    function Product(i) {
+        $("#DetailsFormProduct").html('<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>');
+            $.post("@Url.Action("Product", "Products")", {
+
+            id: i
+
+        },
+        function (data) {
+            $("#DetailsFormProduct").html("");
+            $("#DetailsFormProduct").append('<div class="content">\
+                            <div class="container-fluid">\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-user-circle"></i> الاسم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> '+data.Name+' </p>\
+                                        </div>\
+                                    </div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-user-circle"></i> الاسم EN</div><div class="card-body"><p class="card-text"> ' + data.Name_EN + ' </p></div></div></div>\
+                           <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-list-ol"></i> الموديل</div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.Model + ' </p></div></div> </div>\
+                                     <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-audio-description"></i> التفاصيل</div>\
+                                        <div class="card-body">\
+                                            <p class="card-text">' + data.Description + '</p></div></div> </div><div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-audio-description"></i> التفاصيل EN\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text">' + data.Description_EN + '</p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-percentage"></i> قيمة الخصم\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.Discount + ' % </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                              عدد الطلبات\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.OrdersCount + ' </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                             عدد المفضلات\
+                                        </div>\
+                                        <div class="card-body">\
+                                            <p class="card-text"> ' + data.FavoritesCount + '  </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="col-lg-12 col-md-12 col-sm-12">\
+                                    <div class="card text-center">\
+                                        <div class="card-header card-header-info">\
+                                            <i class="fas fa-money-bill-alt"></i> السعر\
+                                        </div><div class="card-body"><p class="card-text"> ' + data.Price + ' </p>\
+                                        </div></div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center"><div class="card-header card-header-info"> <i class="fas fa-money-bill-alt"></i> السعر النهائي\
+                                        </div><div class="card-body"><p class="card-text"> ' + data.TotalPrice + ' </p></div>\
+                                    </div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center"><div class="card-header card-header-info"> <i class="fas fa-layer-group"></i> النوع\
+                                        </div><div class="card-body"><p class="card-text"> ' + data.CatName + ' </p></div>\
+                                    </div></div><div class="col-lg-12 col-md-12 col-sm-12"><div class="card text-center"><div class="card-header card-header-info"><i class="fas fa-image"></i> الصورة\
+                                        </div><div class="card-body"><p class="card-img-bottom"> <img src="../../Uploads/Products/'+data.ID+'.jpg" width="40%" />\
+                                            </p></div></div></div></div> </div>');
+
+        }
+
+          )
+        }
+</script>
+
+
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfi--X3KHpB_i-y28cj--IwB7VbYpPcAE&callback=initMap">
+</script>

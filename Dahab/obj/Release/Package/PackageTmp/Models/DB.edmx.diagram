@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="18e761ec447e488391788da9b7c1cc68" Name="Diagram1" ZoomLevel="91">
+        <EntityTypeShape EntityType="DahabModel.Admin" Width="1.5" PointX="5.75" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Category" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Code" Width="1.5" PointX="7.75" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Contact" Width="1.5" PointX="7.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Favorite" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Order_Details" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Order" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Product" Width="1.5" PointX="3" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Size" Width="1.5" PointX="3" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.Subscriber" Width="1.5" PointX="7.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DahabModel.User" Width="1.5" PointX="0.75" PointY="11.25" IsExpanded="true" />
+        <AssociationConnector Association="DahabModel.FK__Products__Cat_ID__1BFD2C07" ManuallyRouted="false" />
+        <AssociationConnector Association="DahabModel.FK__Sizes__Cat_ID__15502E78" ManuallyRouted="false" />
+        <AssociationConnector Association="DahabModel.FK__Favorites__Produ__1FCDBCEB" ManuallyRouted="false" />
+        <AssociationConnector Association="DahabModel.FK__Favorites__User___1ED998B2" ManuallyRouted="false" />
+        <AssociationConnector Association="DahabModel.FK__Order_Det__Order__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="DahabModel.FK__Order_Det__Produ__276EDEB3" ManuallyRouted="false" />
+        <AssociationConnector Association="DahabModel.FK__Orders__User_ID__239E4DCF" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,436 @@
+﻿@model IEnumerable<Dahab.Models.Admin>
+
+@{
+    ViewBag.Title = "الادمن";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="main-panel">
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-plain">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title mt-0">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                                    <i class="fa fa-plus-circle"></i>
+                                </button>
+                            </h4>
+                        </div>
+                        @if (TempData["error"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>@TempData["error"]</strong>
+                            </div>
+                        }
+                        @if (TempData["Done"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>@TempData["Done"]</strong>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example23" class="display nowrap table table-hover">
+                                    <thead>
+                                    <th>
+                                        الاسم
+                                    </th>
+                                    <th>
+                                        مدير ؟
+                                    </th>
+                                    <th>
+                                        <i class="fa fa-cogs"></i>
+                                    </th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr id="@item.ID">
+                                                <td>
+                                                    @item.UserName
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(i=>item.IsManager)
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-info" onclick="Details(@(item.ID));" data-toggle="modal" data-target="#myModal2"> <i class="fa fa-info-circle"></i></button>
+                                                    <button class="btn btn-primary" onclick="Edit(@(item.ID));" data-toggle="modal" data-target="#myModal1"> <i class="fa fa-cog"></i></button>
+                                                    <button class="btn btn-danger" onclick="Delete(@(item.ID));"> <i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Modal -->
+        <div id="myModal" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">اضافة ادمن </h4>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font:200" id="CheckAddStatus"></label>
+                        <form id="FormAdd" action="~/Admins/Create" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fa fa-user-circle"></i> الاسم : </label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" required name="UserName" id="UserNameAdd" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-4 col-form-label"><i class="fa fa-unlock-alt"></i> كلمة المرور : </label>
+                                <div class="col-sm-8">
+                                    <input type="password" name="Password" required class="form-control" id="staticEmail" value="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-4">
+                                    هو مدير ؟ :
+                                </label>
+                                <div class="col-sm-8">
+                                    <label class="switch">
+                                        <input type="checkbox" value="true" name="IsManager">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-4">
+                                    تمكين الكود :
+                                </label>
+                                <div class="col-sm-8">
+                                    <label class="switch">
+                                        <input type="checkbox" value="true" name="Access_Codes">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4">
+                                    تمكين الانواع :
+                                </label>
+                                <div class="col-sm-8">
+                                    <label class="switch">
+                                        <input type="checkbox" value="true" name="Access_Categories">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-4">
+                                    تمكين المنتجات :
+                                </label>
+                                <div class="col-sm-8">
+                                    <label class="switch">
+                                        <input type="checkbox" value="true" name="Access_Products">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-4">
+                                    تمكين المستخدمين :
+                                </label>
+                                <div class="col-sm-8">
+                                    <label class="switch">
+                                        <input type="checkbox" value="true" name="Access_Users">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4">
+                                    تمكين الطلبات :
+                                </label>
+                                <div class="col-sm-8">
+                                    <label class="switch">
+                                        <input type="checkbox" value="true" name="Access_Orders">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 text-right" style="line-height: 2.5em;"> صور </label>
+                                <div class="col-xs-12 col-md-4 ">
+                                    <!-- image-preview-filename input [CUT FROM HERE]-->
+                                    <div class="input-group image-preview">
+
+                                        <span class="input-group-btn">
+
+                                            <!-- image-preview-input -->
+                                            <div class="btn btn-outline-dark image-preview-input">
+                                                <input type="file" accept="" name="Photo" />
+                                                <i class="fa fa-folder-open"></i>
+                                                اختر صورة 
+
+                                            </div>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <button type="button" onclick="CheckAdd();" class="btn btn-success"><i class="fas fa-check"></i> اضافة </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Edit Modal -->
+        <div id="myModal1" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">تعديل الادمن  </h4>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font:200" id="CheckEditStatus"></label>
+                        <form id="FormEdit" action="~/Admins/Edit" method="post" enctype="multipart/form-data">
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Info Modal -->
+        <div id="myModal2" class="modal fade " role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"> معلومات الادمن  </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="content">
+                            <div id="DetailsForm" class="container-fluid">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Check UserName Before Adding*@
+
+<script>
+    
+    function CheckAdd() {
+
+        $.post("@Url.Action("CheckAdd","Admins")", {
+
+            username: $("#UserNameAdd").val()
+
+    },
+    function (data) {
+
+        if (data == 0) {
+            $("#CheckAddStatus").html('<font color="Red">اسم المستخدم موجود بالفعل .. برجاء ادخال اسم اخر</font>');
+            $("#UserNameAdd").css("border-color", "Red");
+        } else {           
+            $("#FormAdd").submit();
+        }
+    }
+
+        )
+
+    }
+</script>
+
+@*Check UserName Before Editing*@
+
+<script>
+
+    function CheckEdit() {
+
+        $.post("@Url.Action("CheckEdit","Admins")", {
+
+            username: $("#UserNameEdit").val(),
+            id: $("#IDHiddenEdit").val()
+    },
+    function (data) {
+
+        if (data == 0) {
+            $("#CheckEditStatus").html('<font color="Red">اسم المستخدم موجود بالفعل .. برجاء ادخال اسم اخر</font>');
+            $("#UserNameEdit").css("border-color", "Red");
+        } else {
+            $("#FormEdit").submit();
+        }
+    }
+
+        )
+
+    }
+</script>
+
+@*Delete Script*@
+
+<script>
+    function Delete(i) {
+
+        var Confirmed = confirm('هل تريد مسح هذا الادمن بالفعل ؟؟');
+
+        if (Confirmed == true) {
+            $.post("@Url.Action("Delete", "Admins")", {
+
+                id: i
+
+            },
+        function (data) {
+            $("#example23 tr#" + data + "").remove();
+        }
+
+          )
+        }
+    }
+
+
+</script>
+
+@*Edit Script*@
+
+<script>
+    function Edit(i) {
+        $("#FormEdit").html('<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>');
+            $.post("@Url.Action("Admin", "Admins")", {
+
+            id: i
+
+        },
+        function (data) {
+            $("#FormEdit").html("");
+            $("#FormEdit").append("<input id='IDHiddenEdit' name='ID' value='" + data.ID + "' type='hidden' /><div class='form-group row'><label for='name' class='col-sm-4 col-form-label'><i class='fa fa-user-circle'></i> الاسم : </label><div class='col-sm-8'> <input type='text' name='UserName' required class='form-control' id='UserNameEdit' value='" + data.UserName + "'></div></div><div class='form-group row'><label for='name' class='col-sm-4 col-form-label'><i class='fa fa-unlock-alt'></i> كلمة المرور : </label><div class='col-sm-8'><input type='password' name='Password' required class='form-control' id='staticEmail' value='" + data.Password + "'></div></div>");
+            if (data.IsManager)
+            {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'> هو مدير ؟ :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='IsManager' checked value='true'><span class='slider round'></span></label></div></div>");
+            } else {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'> هو مدير ؟ :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='IsManager' value='true'><span class='slider round'></span></label></div></div>");
+            }
+            if (data.Access_Codes)
+            {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين الكود :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Codes' checked value='true'><span class='slider round'></span></label>");
+
+            } else {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين الكود :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Codes' value='true'><span class='slider round'></span></label>");
+            }
+            if (data.Access_Categories)
+            {
+                $("#FormEdit").append("</div></div><div class='form-group row'><label class='col-sm-4'>تمكين الانواع :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Categories' checked value='true'><span class='slider round'></span></label></div></div>");
+            } else {
+                $("#FormEdit").append("</div></div><div class='form-group row'><label class='col-sm-4'>تمكين الانواع :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Categories' value='true'><span class='slider round'></span></label></div></div>");
+            }
+            if (data.Access_Products)
+            {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين المنتجات :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Products' checked value='true'><span class='slider round'></span></label></div></div>");
+            } else {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين المنتجات :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Products' value='true'><span class='slider round'></span></label></div></div>");
+            }
+            if (data.Access_Users)
+            {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين المستخدمين :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Users' checked value='true'><span class='slider round'></span></label></div></div>");
+            } else {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين المستخدمين :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Users' value='true'><span class='slider round'></span></label></div></div>");
+            }
+            if (data.Access_Orders) {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين الطلبات :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Orders' checked value='true'><span class='slider round'></span></label></div></div>");
+            } else {
+                $("#FormEdit").append("<div class='form-group row'><label class='col-sm-4'>تمكين الطلبات :</label><div class='col-sm-8'><label class='switch'><input type='checkbox' name='Access_Orders' value='true'><span class='slider round'></span></label></div></div>");
+            }
+            $("#FormEdit").append("<div class='form-group row'><label class='col-md-3 text-right' style='line-height: 2.5em;'> صورة </label><div class='col-xs-12 col-md-4 '> <div class='input-group image-preview'><span class='input-group-btn'><div class='btn btn-outline-dark image-preview-input'><input type='file' accept='' name='Photo' /><i class='fa fa-folder-open'></i>اختر صورة </div></span></div></div></div><button type='button' onclick='CheckEdit();' class='btn btn-success'><i class='fas fa-check'></i> حفظ </button>");
+        }
+
+      )
+        }
+</script>
+
+@*Details Script*@
+
+<script>
+    function Details(i) {
+        $("#DetailsForm").html('<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>');
+            $.post("@Url.Action("Admin", "Admins")", {
+
+            id: i
+
+        },
+        function (data) {
+            $("#DetailsForm").html("");
+            $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'><i class='fas fa-user-circle'></i> الاسم</div><div class='card-body'><p class='card-text'> "+data.UserName+" </p></div></div></div>");
+            if (data.IsManager)
+            {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>؟ مدير</div><div class='card-body'><p class='card-text'>هذا الادمن يمكنه التحكم في باقي المسئولين </p></div></div></div>");
+            } else {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>؟ مدير</div><div class='card-body'><p class='card-text'>ليس له صلاحية للتحكم في المسئولين </p></div></div></div>");
+            }
+            if (data.Access_Codes)
+            {
+                $("#DetailsForm").append(" <div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>  صلاحية الاكواد</div><div class='card-body'><p class='card-text'> هذا الادمن يمكنه التحكم في الاكواد </p></div></div></div>");
+            } else {
+                $("#DetailsForm").append(" <div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'> صلاحية الاكواد </div><div class='card-body'><p class='card-text'> لا يمكن التحكم </p></div></div></div>");
+            }
+            if (data.Access_Categories)
+            {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>صلاحية الانواع</div><div class='card-body'><p class='card-text'>لديه صلاحية علي الانواع </p></div></div></div>");
+            } else {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>صلاحية الانواع</div><div class='card-body'><p class='card-text'> لا يوجد صلاحية علي الانواع</p></div></div></div>");
+            }
+            if (data.Access_Products) {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>صلاحية المنتجات</div><div class='card-body'><p class='card-text'> لديه صلاحية علي المنتجات </p></div></div></div>");
+            } else {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'>صلاحية المنتجات</div><div class='card-body'><p class='card-text'> ليس لديه صلاحية علي المنتجات </p></div></div></div>");
+            }
+            if (data.Access_Users) {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'> صلاحية المستخدمين</div><div class='card-body'><p class='card-text'> لديه صلاحية علي المستخدمين </p></div></div></div>");
+            } else {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'> صلاحية المستخدمين</div><div class='card-body'><p class='card-text'> ليس لديه صلاحية علي المستخدمين </p></div></div></div>");
+            }
+            if (data.Access_Orders) {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'> صلاحية الطلبات</div><div class='card-body'><p class='card-text'>  لديه صلاحية علي الطلبات </p></div></div></div>");
+            } else {
+                $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'><div class='card text-center'><div class='card-header card-header-info'> صلاحية الطلبات</div><div class='card-body'><p class='card-text'>  ليس لديه صلاحية علي الصلبات </p></div></div></div>");
+            }                       
+            $("#DetailsForm").append("<div class='col-lg-12 col-md-12 col-sm-12'> <div class='card text-center'><div class='card-header card-header-info'><i class='fas fa-image'></i> الصورة</div><div class='card-body'><p class='card-img-bottom'><img src='../../Uploads/Admins/" + data.ID + ".jpg' width='40%' /></p></div></div></div>");
+
+        }
+
+          )
+        }
+  </script>

@@ -1,0 +1,130 @@
+﻿@using Dahab.Models
+@{ 
+    DB db = new DB();
+}
+@{
+    ViewBag.Title = "التحليلات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-cart-plus"></i>
+                            </div>
+                            <p class="card-category">المنتجات</p>
+                            <h4 class="card-title">
+                                @db.Products.Count()
+                                <small>منتج</small>
+                            </h4>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Products/Index" class="btn btn-warning"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-bullhorn"></i>
+                            </div>
+                            <p class="card-category">الطلبات </p>
+                            <h4 class="card-title">@db.Orders.Count() طلب </h4>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Offers/Index" class="btn btn-success"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-danger card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <p class="card-category"> المديرين</p>
+                            <h3 class="card-title">@db.Admins.Count() مدير</h3>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Admins/Index" class="btn btn-danger"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-danger card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-wifi"></i>
+                            </div>
+                            <p class="card-category"> المشتركين</p>
+                            <h3 class="card-title">@db.Subscribers.Count() مشترك</h3>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Subscribers/Index" class="btn btn-danger"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <p class="card-category">الانواع </p>
+                            <h3 class="card-title">@db.Categories.Count() نوع</h3>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Categories/Index" class="btn btn-primary"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <p class="card-category">العملاء </p>
+                            <h3 class="card-title">@db.Users.Count() عميل</h3>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Users/Index" class="btn btn-info"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-pills card-header-icon">
+                            <div class="card-icon">
+                                <i class="fa fa-link"></i>
+                            </div>
+                            <p class="card-category">التواصل </p>
+                            <h3 class="card-title">@db.Contacts.Count()</h3>
+                        </div>
+                        <div class="card-footer">
+                            التفاصيل  <a href="~/Contacts/Index" class="btn btn-pills"><i class="fa fa-info-circle"></i> </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <canvas id="myChart" style="max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
